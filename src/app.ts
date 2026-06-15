@@ -1,11 +1,22 @@
+import 'reflect-metadata';
 import express from 'express';
+import { MikroORM } from '@mikro-orm/mysql';
+import config from './mikro-orm.config';
+import { requestContextMiddleware } from './shared/middleware/request-context.middleware';
+
+export let orm: MikroORM;
 
 const app = express();
 
 app.use(express.json());
 
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
-});
+export async function initApp() {
+  orm = await MikroORM.init(config);
+  app.use(requestContextMiddleware);
 
-export default app;
+  app.get('/health', (req, res) => {
+    res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  });
+
+  return app;
+}

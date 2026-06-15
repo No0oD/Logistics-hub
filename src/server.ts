@@ -1,9 +1,15 @@
 import 'reflect-metadata';
 import 'dotenv/config';
-import app from './app';
+import { initApp } from './app';
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+async function bootstrap() {
+  const app = await initApp();
+
+  app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+  });
+}
+
+bootstrap();
