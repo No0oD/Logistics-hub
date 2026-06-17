@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 import express from 'express';
-import { MikroORM } from '@mikro-orm/mysql';
+import { MikroORM, RequestContext } from '@mikro-orm/mysql';
 import config from './mikro-orm.config';
-import { requestContextMiddleware } from './shared/middleware/request-context.middleware';
+import { authRouter } from './modules/auth/auth.routes';
 
 export let orm: MikroORM;
 
@@ -12,11 +12,16 @@ app.use(express.json());
 
 export async function initApp() {
   orm = await MikroORM.init(config);
-  app.use(requestContextMiddleware);
+
+  app.use((req, res, next) => {
+    RequestContext.create(orm.em, next);
+  });
 
   app.get('/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
   });
+
+  app.use('/api/auth', authRouter(orm.em));
 
   return app;
 }
