@@ -4,6 +4,8 @@ import { DriversController } from './drivers.controller';
 import { authMiddleware } from '../../shared/middleware/auth.middleware';
 import { requireRole } from '../../shared/middleware/require-role.middleware';
 import { UserRole } from '../users/entities/user.entity';
+import { RoutesController } from '../routes/routes.controller';
+
 
 export function driversRouter(em: EntityManager): Router {
   const router = Router();
@@ -13,9 +15,11 @@ export function driversRouter(em: EntityManager): Router {
   const isDispatcherOrAbove = requireRole(UserRole.ADMIN, UserRole.DISPATCHER);
   const isDriverOrAbove = requireRole(UserRole.ADMIN, UserRole.DISPATCHER, UserRole.DRIVER);
 
+  const routesController = new RoutesController(em);
+
+
   router.use(authMiddleware);
 
-  // Важливо: /available має бути ДО /:id — інакше Express вирішить що "available" це id
   router.get('/available', isDispatcherOrAbove, controller.findAvailable);
 
   router.get('/', isDispatcherOrAbove, controller.findAll);
@@ -24,6 +28,8 @@ export function driversRouter(em: EntityManager): Router {
   router.patch('/:id', isAdmin, controller.update);
   router.patch('/:id/status', isDriverOrAbove, controller.changeStatus);
   router.delete('/:id', isAdmin, controller.remove);
+  router.get('/:driverId/routes', isDispatcherOrAbove, routesController.findByDriver);
+
 
   return router;
 }
