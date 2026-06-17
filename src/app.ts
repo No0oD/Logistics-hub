@@ -8,6 +8,7 @@ import { warehousesRouter } from './modules/warehouses/warehouses.routes';
 import { driversRouter } from './modules/drivers/drivers.routes';
 import { routesRouter } from './modules/routes/routes.routes';
 import { shipmentsRouter } from './modules/shipments/shipments.routes';
+import { dashboardRouter } from './modules/dashboard/dashboard.routes';
 
 
 
@@ -34,6 +35,7 @@ export async function initApp() {
   app.use('/api/drivers', driversRouter(orm.em));
   app.use('/api/routes', routesRouter(orm.em));
   app.use('/api/shipments', shipmentsRouter(orm.em));
+  app.use('/api/dashboard', dashboardRouter(orm.em));
 
   return app;
 }
