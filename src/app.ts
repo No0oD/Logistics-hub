@@ -9,7 +9,8 @@ import { driversRouter } from './modules/drivers/drivers.routes';
 import { routesRouter } from './modules/routes/routes.routes';
 import { shipmentsRouter } from './modules/shipments/shipments.routes';
 import { dashboardRouter } from './modules/dashboard/dashboard.routes';
-
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from './shared/swagger/swagger.config';
 
 
 export let orm: MikroORM;
@@ -36,6 +37,8 @@ export async function initApp() {
   app.use('/api/routes', routesRouter(orm.em));
   app.use('/api/shipments', shipmentsRouter(orm.em));
   app.use('/api/dashboard', dashboardRouter(orm.em));
+
+  app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
   return app;
 }
