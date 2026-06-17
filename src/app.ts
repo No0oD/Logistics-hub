@@ -3,6 +3,13 @@ import express from 'express';
 import { MikroORM, RequestContext } from '@mikro-orm/mysql';
 import config from './mikro-orm.config';
 import { authRouter } from './modules/auth/auth.routes';
+import { usersRouter } from './modules/users/users.routes';
+import { warehousesRouter } from './modules/warehouses/warehouses.routes';
+import { driversRouter } from './modules/drivers/drivers.routes';
+import { routesRouter } from './modules/routes/routes.routes';
+import { shipmentsRouter } from './modules/shipments/shipments.routes';
+
+
 
 export let orm: MikroORM;
 
@@ -22,6 +29,11 @@ export async function initApp() {
   });
 
   app.use('/api/auth', authRouter(orm.em));
+  app.use('/api/users', usersRouter(orm.em)); 
+  app.use('/api/warehouses', warehousesRouter(orm.em));
+  app.use('/api/drivers', driversRouter(orm.em));
+  app.use('/api/routes', routesRouter(orm.em));
+  app.use('/api/shipments', shipmentsRouter(orm.em));
 
   return app;
 }
